@@ -24,7 +24,7 @@ def getConfig(s1, s2):
             continue
 
         # find length of orbit
-        end, cur = tup # TODO don't assume SPOKES = 2
+        end, cur = tup # TODO don't assume RAYS = 2
         
         orbitlen=1
         while cur != end:
