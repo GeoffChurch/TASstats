@@ -9,16 +9,21 @@ def disjoint2Sets(X): # equivalent to multicombinations(X, [2]*(len(X)//2))
    return f(X, [])
 
 
-def multicombinations(X, part_sizes):
+def multicombinations(X, part_sizes, retain_order=False):
    def getTuples(X, part_sizes, cur):
       #print('\tgetTuples',(X, part_sizes, cur))
       if not part_sizes:
          yield cur
          return
-      for A, B in combinations(X[1:], part_sizes[0] - 1):
-         for parts in getTuples(B, part_sizes[1:], cur+[X[:1] + A]):
-            yield parts
-            
+      if retain_order:
+         for A, B in combinations(X[1:], part_sizes[0] - 1):
+            for parts in getTuples(B, part_sizes[1:], cur+[X[:1] + A]):
+               yield parts
+      else:
+         for A, B in combinations(X, part_sizes[0]):
+            for parts in getTuples(B, part_sizes[1:], cur + [A]):
+               yield parts
+   
    return getTuples(X, part_sizes, [])
 
 def combinations(X, k):

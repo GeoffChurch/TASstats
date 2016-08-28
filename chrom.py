@@ -11,11 +11,23 @@ def chunkList(l, chunkSize):
     # what follows assumes alpha = 2:
     return zip(l[::chunkSize],l[1::chunkSize])
 
+def disjoint2Sets(X):  # equivalent to multicombinations(X, [2]*(len(X)//2))
+   def f(X, cur):
+      if not X:
+         yield cur
+         return
+      for i in range(1, len(X)):
+         for perm in f(X[1:i] + X[i+1:], cur + [(X[0], X[i])]):
+            yield perm
+   return f(X, [])
+
 def getConfig(s1):
     #s1 = list(sorted(chunkList(s1, alpha))) # maybe use binary search
     #s2 = list(sorted(chunkList(s2, alpha)))
     #print('getConfig({})'.format(s1))
-    s1 = list(chunkList(s1, alpha))
+
+    s1 = list(s1)
+    # s1 = list(chunkList(s1, alpha))
 
     #s2 = list(defaultList)
     s2 = list(defaultList)
@@ -93,7 +105,8 @@ def countConfigurations(n):
     from multiprocessing import Pool
     pool = Pool()
     #return Counter(map(getConfig,permutations(range(n))))
-    return Counter(pool.imap_unordered(getConfig,permutations(range(n)), chunksize=2048))
+    return Counter(pool.imap_unordered(getConfig,disjoint2Sets(list(range(n))), chunksize=2048))
+    #return Counter(pool.imap_unordered(getConfig,permutations(range(n)), chunksize=2048))
 
 def main():
     from sys import argv
